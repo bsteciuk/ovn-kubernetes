@@ -135,7 +135,7 @@ func ConfigureInterface(args *skel.CmdArgs, namespace string, podName string, ma
 }
 
 // PlatformSpecificCleanup deletes the OVS port
-func PlatformSpecificCleanup(args *skel.CmdArgs) error {
+func PlatformSpecificCleanup(args *skel.CmdArgs, argsMap map[string]string) error {
 	ifaceName := args.ContainerID[:15]
 	ovsArgs := []string{
 		"del-port", "br-int", ifaceName,
@@ -149,6 +149,6 @@ func PlatformSpecificCleanup(args *skel.CmdArgs) error {
 }
 
 // InitialPlatformCheck does nothing on Linux.
-func InitialPlatformCheck(args *skel.CmdArgs) (bool, *current.Result) {
-	return false, &current.Result{}
+func InitialPlatformCheck(args *skel.CmdArgs, argsMap map[string]string) (bool, *current.Result, error) {
+	return false, &current.Result{}, nil
 }

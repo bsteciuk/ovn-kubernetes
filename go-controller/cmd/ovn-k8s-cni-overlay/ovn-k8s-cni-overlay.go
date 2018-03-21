@@ -67,9 +67,14 @@ func cmdAdd(args *skel.CmdArgs) error {
 	// proper Windows CNI support.
 	// NOTE Windows ONLY: there are some cases where we want to return here
 	// and not to continue
-	stop, fakeResult := app.InitialPlatformCheck(args)
-	if stop {
-		return types.PrintResult(fakeResult, conf.CNIVersion)
+	// This will setup the interface on Windows Server RTM. It doesn't support custom
+	// IP/MAC addresses. The CNI will stop here and print the result without retrieving
+	// from the kubernetes annotations the IP of the container.
+	stop, winResult, err := app.InitialPlatformCheck(args, argsMap)
+	if err != nil {
+		return fmt.Errorf("Failed to setup network for Windows RTM: %v", err)
+	} else if stop {
+		return types.PrintResult(winResult, conf.CNIVersion)
 	}
 
 	// Get the IP address and MAC address from the API server.
@@ -141,7 +146,11 @@ func cmdAdd(args *skel.CmdArgs) error {
 }
 
 func cmdDel(args *skel.CmdArgs) error {
-	return app.PlatformSpecificCleanup(args)
+	argsMap, err := argString2Map(args.Args)
+	if err != nil {
+		return err
+	}
+	return app.PlatformSpecificCleanup(args, argsMap)
 }
 
 func main() {
@@ -152,8 +161,9 @@ func main() {
 	c.Flags = config.Flags
 	c.Action = func(ctx *cli.Context) error {
 		if err := config.InitConfig(ctx, &config.Defaults{
-			K8sAPIServer: true,
-			K8sToken:     true,
+			OvnNorthAddress: true,
+			K8sAPIServer:    true,
+			K8sToken:        true,
 		}); err != nil {
 			return err
 		}
