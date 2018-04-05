@@ -27,6 +27,7 @@ func (cluster *OvnClusterController) StartClusterMaster(masterNodeName string) e
 	clusterNetwork := cluster.ClusterIPNet
 	hostSubnetLength := cluster.HostSubnetLength
 
+
 	subrange := make([]string, 0)
 	existingNodes, err := cluster.Kube.GetNodes()
 	if err != nil {
@@ -45,6 +46,9 @@ func (cluster *OvnClusterController) StartClusterMaster(masterNodeName string) e
 	}
 	// Add the masterSwitchNetwork to subrange so that it is counted as one already taken
 	subrange = append(subrange, masterSwitchNetwork)
+	// Add the service subnet to subrange so that it is counted as one already taken
+	subrange = append(subrange, cluster.ClusterServicesSubnet)
+
 	// NewSubnetAllocator is a subnet IPAM, which takes a CIDR (first argument)
 	// and gives out subnets of length 'hostSubnetLength' (second argument)
 	// but omitting any that exist in 'subrange' (third argument)
