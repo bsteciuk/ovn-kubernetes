@@ -383,14 +383,14 @@ func getContainerPortIPMacAddressGatewayIP(portElementName string) (string, stri
 	}
 	logrus.Infof("Found IP %v for port: %v", ipAddress, portElementName)
 	// Ensure that the macAddress has xx:xx:xx:xx:xx:xx format
-	macAddress = strings.Replace(macAddress, ":", "-", -1)
+	macAddress = strings.Replace(macAddress, "-", ":", -1)
 	macAddress = strings.ToLower(macAddress)
 	return ipAddress, macAddress, gatewayIP, nil
 }
 
 func configureInterfaceRTM(args *skel.CmdArgs, argsMap map[string]string) (*current.Result, error) {
 	logrus.Infof("Setting up pod network on Windows Server RTM")
-	containerInterfaceName, portElementName, err := getContainerPortDetails(args.ContainerID)
+	containerInterfaceName, _, err := getContainerPortDetails(args.ContainerID)
 	if err != nil {
 		return &current.Result{}, fmt.Errorf("Failed to get container port details, error: %v", err)
 	}
@@ -406,7 +406,7 @@ func configureInterfaceRTM(args *skel.CmdArgs, argsMap map[string]string) (*curr
 	namespace := argsMap["K8S_POD_NAMESPACE"]
 	podName := argsMap["K8S_POD_NAME"]
 	ifaceID := fmt.Sprintf("%s_%s", namespace, podName)
-	ipAddress, macAddress, gatewayIP, err := getContainerPortIPMacAddressGatewayIP(portElementName)
+	ipAddress, macAddress, gatewayIP, err := getContainerPortIPMacAddressGatewayIP(containerInterfaceName)
 	if err != nil {
 		return &current.Result{}, fmt.Errorf("error getting ip/mac: %v", err)
 	}
