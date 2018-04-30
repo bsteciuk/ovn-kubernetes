@@ -6,7 +6,7 @@
 
 - name: set internal IP
   set_fact:
-    host_internal_ip: "{{ ansible_default_ipv4.address }}"
+    host_internal_ip: "{{ ip_address | default('ansible_default_ipv4.address') }}"
 
 # TODO: enable this for future GCE support in the playbooks
 # - name: set public IP
@@ -16,22 +16,23 @@
 
 - name: set public IP
   set_fact:
-    host_public_ip: "{{ host_internal_ip }}"
-  # when: not GCE
+    host_public_ip: "{{ ip_address | default('host_internal_ip') }}"
+  # when: not GCE   temp_dir: "{{docker_temp_dir | default('C:/Windows/Temp')}}"
 
 - name: set interface name
   set_fact:
-    interface_name: "{{ ansible_default_ipv4.alias }}"
+    interface_name: "{{ interface_alias | default('ansible_default_ipv4.alias') }}"
 
 - name: set interface gateway
   set_fact:
-    interface_gateway: "{{ ansible_default_ipv4.gateway }}"
+    interface_gateway: "{{ gateway | default('ansible_default_ipv4.gateway') }}"
 
 - name: set gateway next hop
   set_fact:
-    gateway_next_hop: "{{ ansible_default_ipv4.gateway }}"
+    gateway_next_hop: "{{ gateway | default('ansible_default_ipv4.gateway') }}"
 
 - debug: var=ansible_all_ipv4_addresses
 - debug: var=host_internal_ip
 - debug: var=host_public_ip
 - debug: var=gateway_next_hop
+

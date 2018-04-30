@@ -1,6 +1,10 @@
-ansible_ssh_user: ubuntu
+ansible_ssh_user: vagrant
 docker_bin_dir: /usr/bin
 
 master: false
 minion: true
 controller: false
+
+ip_address: 172.20.2.31
+gateway: 172.20.2.1
+interface_alias: eth1

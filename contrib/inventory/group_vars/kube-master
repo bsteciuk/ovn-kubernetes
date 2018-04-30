@@ -1,7 +1,11 @@
-ansible_ssh_user: ubuntu
+ansible_ssh_user: vagrant
 docker_bin_dir: /usr/bin
 
 # this will be the master node
 master: true
 minion: false
 controller: true
+
+ip_address: 172.20.2.30
+gateway: 172.20.2.1
+interface_alias: eth1
