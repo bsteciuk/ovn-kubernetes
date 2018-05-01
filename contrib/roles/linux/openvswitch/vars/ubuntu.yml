@@ -33,7 +33,7 @@ ovs_info:
   release_name: openvswitch-2.8.2
   pkg_build_version: 2.8.2-1
   # Prebuilt packages info and download link
-  install_prebuilt_packages: "{{ovs_install_prebuilt_packages | default(false)}}"
+  install_prebuilt_packages: true
   prebuilt_packages_download_path: /tmp
   prebuilt_version: "2.8.2-1"
-  debs_targz_link: "replace_me"
+  debs_targz_link: "http://172.20.2.20/ovs_debs.tar.gz"

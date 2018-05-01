@@ -22,9 +22,9 @@
 - name: IP facts | set interface details
   set_fact:
     interface_description: "{{ interface_alias | default('ansible_interfaces[0].interface_name') }}"
-    interface_mac_addr: "{{ ansible_interfaces | json_query(\"?connection_name =='\" + interface_alias + \".macaddress') | default('ansible_interfaces[0].macaddress') }}"
-    interface_default_gateway: "{{ ansible_interfaces | json_query(\"?connection_name =='\" + interface_alias + \".default_gateway') | default('ansible_interfaces[0].default_gateway') }}"
-    interface_index: "{{ ansible_interfaces | json_query(\"?connection_name =='\" + interface_alias + \".interface_index') | default('ansible_interfaces[0].interface_index') }}"
+    interface_mac_addr: "{{ ansible_interfaces | json_query('ansible_interfaces[?connection_name == `' + interface_alias + '`].macaddress') | default('ansible_interfaces[0].macaddress') }}"
+    interface_default_gateway: "{{ ansible_interfaces | json_query('ansible_interfaces[?connection_name ==`' + interface_alias + '`].default_gateway') | default('ansible_interfaces[0].default_gateway') }}"
+    interface_index: "{{ ansible_interfaces | json_query('ansible_interfaces[?connection_name ==`' + interface_alias + '`].interface_index') | default('ansible_interfaces[0].interface_index') }}"
 
 # Do not mark those as changed when executing the command
 - name: IP facts | Get Windows Prefix Length of {{interface_description}}
